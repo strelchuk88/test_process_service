@@ -20,3 +20,35 @@ services:
       - ../.env
     volumes:
       - ../app:/app/
+
+  consumer:
+    build:
+      context: ..
+      dockerfile: app/Dockerfile
+    container_name: consumer
+    command: faststream run worker:app
+    restart: always
+    depends_on:
+      postgres:
+        condition: service_healthy
+        required: false
+      rabbitmq:
+        condition: service_healthy
+        required: false
+    env_file:
+      - ../.env
+    volumes:
+      - ../app:/app/
+
+  # Webhook receiver for local checks: http://webhook-mock:9000/webhook (or /fail)
+  webhook-mock:
+    build:
+      context: ..
+      dockerfile: app/Dockerfile
+    container_name: webhook-mock
+    command: uvicorn tools.webhook_mock:app --host 0.0.0.0 --port 9000
+    restart: always
+    ports:
+      - "${WEBHOOK_MOCK_PORT:-9000}:9000"
+    volumes:
+      - ../app:/app/
