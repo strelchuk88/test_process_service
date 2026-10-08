@@ -8,7 +8,6 @@ services:
       - "${WEB_PORT}:8000"
     command: /bin/sh -c "alembic upgrade head && uvicorn --factory main:create_app --reload --host 0.0.0.0 --port 8000"
     restart: always
-    # required: false lets `make app` run this file alone, without storages/rabbit
     depends_on:
       postgres:
         condition: service_healthy
@@ -40,7 +39,6 @@ services:
     volumes:
       - ../app:/app/
 
-  # Webhook receiver for local checks: http://webhook-mock:9000/webhook (or /fail)
   webhook-mock:
     build:
       context: ..
