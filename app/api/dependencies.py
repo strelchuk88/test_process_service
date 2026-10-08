@@ -5,10 +5,15 @@ from fastapi import Depends, Request
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.database import Database
+from infrastructure.broker.broker import Broker
 
 
 def get_db(request: Request) -> Database:
     return request.app.state.db
+
+
+def get_broker(request: Request) -> Broker:
+    return request.app.state.broker
 
 
 async def get_session(

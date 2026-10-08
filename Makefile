@@ -4,6 +4,7 @@ LOGS = docker logs
 ENV_FILE = .env
 APP_FILE = docker_compose/app.yaml
 STORAGES_FILE = docker_compose/storages.yaml
+RABBIT_FILE = docker_compose/rabbit.yaml
 
 .PHONY: app
 app:
@@ -13,6 +14,10 @@ app:
 storages:
 	${DC} --env-file ${ENV_FILE} -f ${STORAGES_FILE} up --build -d
 
+.PHONY: rabbit
+rabbit:
+	${DC} --env-file ${ENV_FILE} -f ${RABBIT_FILE} up --build -d
+
 .PHONY: all
 all:
-	${DC} --env-file ${ENV_FILE} -f ${STORAGES_FILE} -f ${APP_FILE} up --build -d
+	${DC} --env-file ${ENV_FILE} -f ${STORAGES_FILE} -f ${RABBIT_FILE} -f ${APP_FILE} up --build -d
