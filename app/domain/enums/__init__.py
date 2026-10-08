@@ -1,3 +1,3 @@
-from domain.enums.payment import Currency, PaymentStatus
+from domain.enums.payment import CurrencyEnum, PaymentStatus
 
-__all__ = ["Currency", "PaymentStatus"]
+__all__ = ["CurrencyEnum", "PaymentStatus"]
