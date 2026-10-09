@@ -4,13 +4,13 @@ import httpx
 from faststream import ContextRepo, FastStream
 from faststream.rabbit import RabbitBroker
 
-from application.payment.use_cases.process_payment import ProcessPaymentUseCase
+from application.use_cases.process_payment import ProcessPaymentUseCase
 from consumers.payment import router as payment_router
 from core.database import Database
 from core.settings import settings
 from infrastructure.broker.topology import declare
-from services.gateway import PaymentGateway
-from services.webhook import WebhookSender
+from application.services.gateway import PaymentGateway
+from application.services.webhook import WebhookSender
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s [%(name)s] %(message)s")
 

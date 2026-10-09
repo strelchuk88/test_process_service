@@ -16,7 +16,7 @@ class OutboxRepository:
             OutboxModel(
                 event_type=event_type,
                 routing_key=routing_key,
-                ayload=payload
+                payload=payload
             )
         )
 

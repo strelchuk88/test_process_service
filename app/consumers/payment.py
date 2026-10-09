@@ -4,7 +4,7 @@ from faststream import AckPolicy, Context
 from faststream.rabbit import ExchangeType, RabbitExchange, RabbitQueue, RabbitRouter
 from faststream.rabbit.annotations import RabbitBroker, RabbitMessage
 
-from application.payment.use_cases.process_payment import ProcessPaymentUseCase
+from application.use_cases.process_payment import ProcessPaymentUseCase
 from core.settings import settings
 from domain.exceptions import PaymentNotFoundError
 from infrastructure.broker import config

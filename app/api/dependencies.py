@@ -7,8 +7,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from core.database import Database
 from domain.exceptions import InvalidAPIKey
 from infrastructure.broker.broker import Broker
-from application.payment.services.payment import PaymentService
-from application.payment.use_cases.create_payment import CreatePaymentUseCase
+from application.services.payment import PaymentService
+from application.use_cases.create_payment import CreatePaymentUseCase
 
 api_key_header = APIKeyHeader(name="X-API-Key", auto_error=False)
 

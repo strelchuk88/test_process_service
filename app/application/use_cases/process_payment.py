@@ -6,8 +6,8 @@ from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 from domain.enums.payment import PaymentStatus
 from domain.exceptions import PaymentNotFoundError
 from infrastructure.database.repositories.payment import PaymentRepository
-from services.gateway import PaymentGateway
-from services.webhook import WebhookSender
+from application.services.gateway import PaymentGateway
+from application.services.webhook import WebhookSender
 
 logger = logging.getLogger(__name__)
 

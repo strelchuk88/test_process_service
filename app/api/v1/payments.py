@@ -4,8 +4,8 @@ from fastapi import APIRouter, Depends, Header, status
 
 from api.dependencies import get_create_payment_use_case, get_payment_service, verify_api_key
 from api.v1.schemas import PaymentAcceptedSchema, PaymentCreateSchema, PaymentReadSchema
-from application.payment.services.payment import PaymentService
-from application.payment.use_cases.create_payment import CreatePaymentUseCase
+from application.services.payment import PaymentService
+from application.use_cases.create_payment import CreatePaymentUseCase
 
 router = APIRouter(
     prefix="/api/v1/payments",

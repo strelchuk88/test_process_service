@@ -142,20 +142,53 @@ POST /payments ──► [payments + outbox] ──► outbox relay ──► pa
 
 ```
 app/
-├── main.py            # точка входа HTTP (FastAPI)
-├── worker.py          # точка входа воркера (FastStream): топология, сборка зависимостей
-├── api/v1/            # HTTP-роуты, схемы запросов и ответов, проверка X-API-Key
-├── consumers/         # обработчики сообщений RabbitMQ (тонкие, как роуты)
-├── application/       # use case'ы: создание и обработка платежа
-├── core/              # настройки, БД, lifespan
-├── domain/            # enums, ошибки приложения
+├── main.py                         # точка входа API: FastAPI, роутеры, обработчики ошибок
+├── worker.py                       # точка входа воркера: FastStream, объявление топологии при старте, сборка зависимостей
+│
+├── api/                            # HTTP
+│   ├── dependencies.py             # сессия БД, use case'ы, проверка X-API-Key
+│   ├── exception_handlers.py       # AppError → HTTP-ответ
+│   └── v1/
+│       ├── payments.py             # POST /api/v1/payments, GET /api/v1/payments/{id}
+│       └── schemas.py              # схемы запросов и ответов
+│
+├── consumers/                      # обработчики сообщений RabbitMQ
+│   └── payment.py                  # payment.create → обработка, ретрай или DLQ
+│
+├── application/                    # прикладная логика
+│   ├── use_cases/
+│   │   ├── create_payment.py       # платёж + outbox-событие в одной транзакции, идемпотентность
+│   │   └── process_payment.py      # шлюз → статус → webhook
+│   └── services/
+│       ├── payment.py              # получение платежа
+│       ├── gateway.py              # эмулятор платёжного шлюза
+│       └── webhook.py              # отправка webhook'а
+│
+├── domain/
+│   ├── enums/payment.py            # CurrencyEnum, PaymentStatus
+│   └── exceptions.py               # ошибки приложения (AppError и наследники)
+│
 ├── infrastructure/
-│   ├── broker/        # подключение, топология, имена, схема сообщения, отправка на ретрай
-│   ├── database/      # модели и репозитории
-│   └── outbox/        # outbox relay
-├── services/          # получение платежа, эмулятор шлюза, отправка webhook
-├── tools/             # webhook-mock для локальной проверки
-└── alembic/           # миграции
+│   ├── broker/
+│   │   ├── broker.py               # подключение к RabbitMQ
+│   │   ├── config.py               # имена exchange'ей и очередей
+│   │   ├── topology.py             # объявление exchange'ей, очередей, retry и DLQ
+│   │   ├── messages.py             # схема сообщения, заголовок попытки
+│   │   └── retry.py                # отправка в retry-очередь
+│   ├── database/
+│   │   ├── models/                 # PaymentModel, OutboxModel
+│   │   └── repositories/           # PaymentRepository, OutboxRepository
+│   └── outbox/
+│       └── relay.py                # публикация событий из outbox в RabbitMQ
+│
+├── core/
+│   ├── settings.py                 # настройки из .env
+│   ├── database.py                 # движок и фабрика сессий
+│   └── lifespan.py                 # старт API: БД, брокер, топология, outbox relay
+│
+├── alembic/                        # миграции
+└── tools/
+    └── webhook_mock.py             # тестовый приёмник webhook'ов
 ```
 
 ## Ограничения
